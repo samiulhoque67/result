@@ -1,89 +1,431 @@
+<?php include('dbcon.php');?> <!--to establish connection with database-->
+
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/student.css">
-    <title>Result</title>
-</head>
-<body>
-    <?php
-        include("init.php");
 
-        if(!isset($_GET['class']))
-            $class=null;
-        else
-            $class=$_GET['class'];
-        $rn=$_GET['rn'];
+<html>
+    <head>
+    <!--Title of the Document-->
+        <title>
+        	Student Exam Result management | Home
+        </title>
+        	
+        
+	<!--Css files link-->
+			<link href="style.css" rel="stylesheet" type="text/css">
+  			<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+			
+    </head>
 
-        // validation
-        if (empty($class) or empty($rn) or preg_match("/[a-z]/i",$rn)) {
-            if(empty($class))
-                echo '<p class="error">Please select your class</p>';
-            if(empty($rn))
-                echo '<p class="error">Please enter your roll number</p>';
-            if(preg_match("/[a-z]/i",$rn))
-                echo '<p class="error">Please enter valid roll number</p>';
-            exit();
-        }
+    <!--body of the document-->
+    <body>
 
-        $name_sql=mysqli_query($conn,"SELECT `name` FROM `students` WHERE `rno`='$rn' and `class_name`='$class'");
-        while($row = mysqli_fetch_assoc($name_sql))
-        {
-        $name = $row['name'];
-        }
+        <div class="heading" align="center">
+            <h1>STUDENT RESULT</h1>
+		</div>
+		
+	
 
-        $result_sql=mysqli_query($conn,"SELECT `p1`, `p2`, `p3`, `p4`, `p5`, `marks`, `percentage` FROM `result` WHERE `rno`='$rn' and `class`='$class'");
-        while($row = mysqli_fetch_assoc($result_sql))
-        {
-            $p1 = $row['p1'];
-            $p2 = $row['p2'];
-            $p3 = $row['p3'];
-            $p4 = $row['p4'];
-            $p5 = $row['p5'];
-            $mark = $row['marks'];
-            $percentage = $row['percentage'];
-        }
-        if(mysqli_num_rows($result_sql)==0){
-            echo "no result";
-            exit();
-        }
-    ?>
+			
+				<div class="span10">
+        			<table class="table table-bordered" id="example">
+						<tr>  
+						<!--Table Headings-->
+                                                        <th rowspan="2">class</th>
+							<th rowspan="2">Sr. No.</th>
+							<th rowspan="2">Student Name</th>
+							<th rowspan="2">Age</th>
+							<th style="text-align:center" colspan="9">Subject Marks ,Grade point and grade</th>
+                                                        
+						</tr>
+						
+						<tr>
+							<th>Course Title</th>
+                                                        <th>grade</th>
+                                                        <th>point</th>
+							<th>Course Code</th>
+                                                        <th>grade</th>
+                                                        <th>point</th>
+							<th>Obtained Gpa</th>
+                                                        <th>grade</th>
+                                                         <th>point</th>
+                                                        <th>gpa</th>
+							<!--<th>Edit</th>-->
+						</tr>
+				
+						<tr>
+							<?php
+                                                        $name=$_POST['name'];
+                                                            $id=$_POST['id'];
+                                                                $class=$_POST['class'];
+                                                                $password=$_POST['password'];
+                                                              $user_query3=mysqli_query($con,"select password from stu where roll=$id")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query3);
+                                               
+						$result=$row[0];
+                                               
+                                                        
+							/*Query to fetch all student records from the database*/
+						        $user_query=mysqli_query($con,"SELECT *,(ma+en+sc)/3 as avg FROM student ,gpa,point where student.sr=gpa.id and gpa.id=point.id and  stud_name='$name' and gpa.class='$class' and gpa.id='$id'")or die(mysqli_error($con));
+							$user_query1=mysqli_query($con,"SELECT *,(ma+en+sc)/3 as avg FROM student1 ,gpa1,point1 where student1.sr=gpa1.id and gpa1.id=point1.id and  stud_name='$name' and gpa1.class='$class' and gpa1.id='$id'")or die(mysqli_error($con));
+	                                                $user_query2=mysqli_query($con,"SELECT *,(ma+en+sc)/3 as avg FROM student2 ,gpa2,point2 where student2.sr=gpa2.id and gpa2.id=point2.id and  stud_name='$name' and gpa2.class='$class' and gpa2.id='$id'")or die(mysqli_error($con));
+if($class=='Six'&& $password==$result){
+                                                        while($row=mysqli_fetch_array($user_query,MYSQLI_BOTH))
+							{
+							?>
+						<!--Display fetched records in table rows-->
+                                                        <td><?php echo $row['class']; ?></td>
+							<td><?php echo $row['sr']; ?></td>
+							<td><?php echo $row['stud_name']; ?></td>
+							<td><?php echo $row['age']; ?></td>
+							<td><?php echo $row['math']; ?> </td>
+                                                        <td><?php echo $row['m']; ?> </td>
+                                                        <td><?php echo $row['ma']; ?> </td>
+                                                         <td><?php echo $row['eng'];?> </td>
+                                                         <td><?php echo $row['s']; ?> </td>
+                                                        <td><?php echo $row['en']; ?> </td>
+							<td><?php echo $row['sci']; ?></td>
+                                                        <td><?php echo $row['e']; ?> </td>
+                                                        <td><?php echo $row['sc'];?></td>
+                                                        <td><?php echo $row['avg']; ?> </td>
+								
+							<!--<td><a rel="tooltip" href="edit.php" class="btn btn-success">
+							<span class="glyphicon glyphicon-pencil"></span></a></td>-->						
+						</tr>   
+							<?php
+								}
+                                                                while($row=mysqli_fetch_array($user_query1,MYSQLI_BOTH))
+							{
+							?>
+						<!--Display fetched records in table rows-->
+                                                        <td><?php echo $row['class']; ?></td>
+							<td><?php echo $row['sr']; ?></td>
+							<td><?php echo $row['stud_name']; ?></td>
+							<td><?php echo $row['age']; ?></td>
+							<td><?php echo $row['math']; ?> </td>
+                                                        <td><?php echo $row['m']; ?> </td>
+                                                        <td><?php echo $row['ma']; ?> </td>
+                                                         <td><?php echo $row['eng'];?> </td>
+                                                         <td><?php echo $row['s']; ?> </td>
+                                                        <td><?php echo $row['en']; ?> </td>
+							<td><?php echo $row['sci']; ?></td>
+                                                        <td><?php echo $row['e']; ?> </td>
+                                                        <td><?php echo $row['sc'];?></td>
+                                                        <td><?php echo $row['avg']; ?> </td>
+								
+							<!--<td><a rel="tooltip" href="edit.php" class="btn btn-success">
+							<span class="glyphicon glyphicon-pencil"></span></a></td>-->						
+						</tr>   
+							<?php
+}}
+                                                                while($row=mysqli_fetch_array($user_query2,MYSQLI_BOTH))
+							{
+							?>
+						<!--Display fetched records in table rows-->
+                                                        <td><?php echo $row['class']; ?></td>
+							<td><?php echo $row['sr']; ?></td>
+							<td><?php echo $row['stud_name']; ?></td>
+							<td><?php echo $row['age']; ?></td>
+							<td><?php echo $row['math']; ?> </td>
+                                                        <td><?php echo $row['m']; ?> </td>
+                                                        <td><?php echo $row['ma']; ?> </td>
+                                                         <td><?php echo $row['eng'];?> </td>
+                                                         <td><?php echo $row['s']; ?> </td>
+                                                        <td><?php echo $row['en']; ?> </td>
+							<td><?php echo $row['sci']; ?></td>
+                                                        <td><?php echo $row['e']; ?> </td>
+                                                        <td><?php echo $row['sc'];?></td>
+                                                        <td><?php echo $row['avg']; ?> </td>
+								
+							<!--<td><a rel="tooltip" href="edit.php" class="btn btn-success">
+							<span class="glyphicon glyphicon-pencil"></span></a></td>-->						
+						</tr>   
+							<?php
+								}
+							?>                     
+					</table> 
+                                    <table class="table table-bordered" id="example">
+					
+						
+						
+						<tr>
+							
+							
+                                                        <th>Total marks</th>
+							
+							<th>Rank In class</th>
+							<!--<th>Edit</th>-->
+						</tr>
+				
+						<tr>
+							<?php 
+							/*Query to fetch all student records from the database*/
+								$user_query=mysqli_query($con,"SELECT * FROM ( SELECT student.*, (@rank := @rank+1) AS rank 
+													   FROM student INNER JOIN (SELECT @rank := 0) AS a  
+													   ORDER BY per DESC )a
+                                                                                                           where stud_name='$name'
+                                                                                                     
+													   ORDER BY `total` "
+												)or die(mysqli_error($con));
+                                                                $user_query1=mysqli_query($con,"SELECT * FROM ( SELECT student1.*, (@rank := @rank+1) AS rank 
+													   FROM student1 INNER JOIN (SELECT @rank := 0) AS a  
+													   ORDER BY per DESC )a
+                                                                                                           where stud_name='$name'
+                                                                                                     
+													   ORDER BY `total` "
+												)or die(mysqli_error($con));
+                                                                $user_query2=mysqli_query($con,"SELECT * FROM ( SELECT student2.*, (@rank := @rank+1) AS rank 
+													   FROM student2 INNER JOIN (SELECT @rank := 0) AS a  
+													   ORDER BY per DESC )a
+                                                                                                           where stud_name='$name'
+                                                                                                     
+													   ORDER BY `total` "
+												)or die(mysqli_error($con));
+							
+							while($row=mysqli_fetch_array($user_query,MYSQLI_BOTH))
+							{
+							?>
+						<!--Display fetched records in table rows-->
+                                          
+							<td><?php echo $row['total']; ?></td>
+							<td><?php echo $row['rank']; ?></td>
+								
+							<!--<td><a rel="tooltip" href="edit.php" class="btn btn-success">
+							<span class="glyphicon glyphicon-pencil"></span></a></td>-->						
+						</tr> 
+                                                <?php
+								}
+                                                                while($row=mysqli_fetch_array($user_query1,MYSQLI_BOTH))
+							{
+							?>
+						<!--Display fetched records in table rows-->
+                                          
+							<td><?php echo $row['total']; ?></td>
+							<td><?php echo $row['rank']; ?></td>
+								
+							<!--<td><a rel="tooltip" href="edit.php" class="btn btn-success">
+							<span class="glyphicon glyphicon-pencil"></span></a></td>-->						
+						</tr> 
+                                                <?php
+								}
+                                                                while($row=mysqli_fetch_array($user_query2,MYSQLI_BOTH))
+							{
+							?>
+						<!--Display fetched records in table rows-->
+                                          
+							<td><?php echo $row['total']; ?></td>
+							<td><?php echo $row['rank']; ?></td>
+								
+							<!--<td><a rel="tooltip" href="edit.php" class="btn btn-success">
+							<span class="glyphicon glyphicon-pencil"></span></a></td>-->						
+						</tr> 
+                                                <?php
+								}
+							?>                     
+					</table> 
+				</div> 
 
-    <div class="container">
-        <div class="details">
-            <span>Name:</span> <?php echo $name ?> <br>
-            <span>Class:</span> <?php echo $class; ?> <br>
-            <span>Roll No:</span> <?php echo $rn; ?> <br>
-        </div>
+		<!--Summary Section-->
 
-        <div class="main">
-            <div class="s1">
-                <p>Subjects</p>
-                <p>Paper 1</p>
-                <p>Paper 2</p>
-                <p>Paper 3</p>
-                <p>Paper 4</p>
-                <p>Paper 5</p>
-            </div>
-            <div class="s2">
-                <p>Marks</p>
-                <?php echo '<p>'.$p1.'</p>';?>
-                <?php echo '<p>'.$p2.'</p>';?>
-                <?php echo '<p>'.$p3.'</p>';?>
-                <?php echo '<p>'.$p4.'</p>';?>
-                <?php echo '<p>'.$p5.'</p>';?>
-            </div>
-        </div>
+			<div id="content">
+				<button class="btn btn-block">
+					<span class="glyphicon glyphicon-list-alt"></span>&nbsp;Summary
+				</button>
+				<br />
+                                    
+                                
+					<label>1. Number of students Passed:</label>
+					<?php
+                                        if ($class=='Six'){
+					/*Query to find number of students passed*/
+						$user_query=mysqli_query($con,"select count(per) from student where per>=40")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+                                               
+						$result=$row[0];
+						/*Write the result*/
+                                        echo $result;}
+elseif ($class=='Seven'){
+					/*Query to find number of students passed*/
+						$user_query=mysqli_query($con,"select count(per) from student1 where per>=40")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+                                               
+						$result=$row[0];
+						/*Write the result*/
+                                        echo $result;}
+                                         elseif ($class=='Eight'){
+					/*Query to find number of students passed*/
+						$user_query=mysqli_query($con,"select count(per) from student2 where per>=40")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+                                               
+						$result=$row[0];
+						/*Write the result*/
+                                        echo $result;}
+					?>
+                                       	<br />	
 
-        <div class="result">
-            <?php echo '<p>Total Marks:&nbsp'.$mark.'</p>';?>
-            <?php echo '<p>Percentage:&nbsp'.$percentage.'%</p>';?>
-        </div>
+					<label>2. Number of students Failed:</label>
+					<?php
+					if($class=='Six'){
+						$user_query=mysqli_query($con,"select count(per) from student where per<40")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+                                        echo $result;}
+                                        elseif($class=='Seven'){
+						$user_query=mysqli_query($con,"select count(per) from student1 where per<40")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+                                        echo $result;}
+                                        elseif($class=='Eight'){
+						$user_query=mysqli_query($con,"select count(per) from student2 where per<40")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+                                        echo $result;}
+					?>
+                                        
+					<br />
 
-        <div class="button">
-            <button onclick="window.print()">Print Result</button>
-        </div>
-    </div>
-</body>
-</html>
+					<label>3. Name of the student topper in Math:</label>
+					<?php
+                                        if($class=='Six'){
+					/*Query to find student name topper in mathematics subject*/
+						$user_query=mysqli_query($con,"select stud_name from student where math
+						IN 	(select MAX(math) from student)")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+                                        echo $result;}
+                                        elseif($class=='Seven'){
+					/*Query to find student name topper in mathematics subject*/
+						$user_query=mysqli_query($con,"select stud_name from student1 where math
+						IN 	(select MAX(math) from student1)")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+                                        echo $result;}
+                                        elseif($class=='Eight'){
+					/*Query to find student name topper in mathematics subject*/
+						$user_query=mysqli_query($con,"select stud_name from student2 where math
+						IN 	(select MAX(math) from student2)")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+                                        echo $result;}
+					?>
+                                        
+					<br />
+
+					<label>4. Name of the student topper in English:</label>
+					<?php
+                                        if($class=='Six'){
+					/*Query to find student name topper in English subject*/
+						$user_query=mysqli_query($con,"select stud_name from student where eng 
+						IN (select MAX(eng) from student)")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+						echo $result;}
+                                               elseif($class=='Seven'){
+					/*Query to find student name topper in English subject*/
+						$user_query=mysqli_query($con,"select stud_name from student1 where eng 
+						IN (select MAX(eng) from student1)")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+						echo $result;}
+                                                     elseif($class=='Eight'){
+					/*Query to find student name topper in English subject*/
+						$user_query=mysqli_query($con,"select stud_name from student2 where eng 
+						IN (select MAX(eng) from student2)")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+						echo $result;}
+//                                                ?>
+					<br />
+
+					<label>5. Name of the student topper in Science:</label>
+					<?php
+                                        if($class=='Six'){
+					/*Query to find student name topper in Science subject*/
+						$user_query=mysqli_query($con,"select stud_name from student where sci 
+						IN (select MAX(sci) from student)")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+                                        echo $result;}
+                                         if($class=='Seven'){
+					/*Query to find student name topper in Science subject*/
+						$user_query=mysqli_query($con,"select stud_name from student1 where sci 
+						IN (select MAX(sci) from student1)")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+                                        echo $result;}
+                                         if($class=='Eight'){
+					/*Query to find student name topper in Science subject*/
+						$user_query=mysqli_query($con,"select stud_name from student2 where sci 
+						IN (select MAX(sci) from student2)")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+                                        echo $result;}
+                                                ?>
+					<br />
+
+					<label>6. Name of the student topper in All Subject:</label>
+					<?php
+                                        if($class=='Six'){
+					/*Query to find student name topper in All subjects*/
+						$user_query=mysqli_query($con,"select stud_name from student where total 
+						IN (select MAX(total) from student)")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+						echo $result;
+                                        }
+                                        if($class=='Seven'){
+					/*Query to find student name topper in All subjects*/
+						$user_query=mysqli_query($con,"select stud_name from student1 where total 
+						IN (select MAX(total) from student1)")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+						echo $result;
+                                        }
+                                        if($class=='Eight'){
+					/*Query to find student name topper in All subjects*/
+						$user_query=mysqli_query($con,"select stud_name from student2 where total 
+						IN (select MAX(total) from student2)")
+						or die(mysqli_error($con));
+						$row=mysqli_fetch_row($user_query);
+						$result=$row[0];
+						/*Write the result*/
+						echo $result;
+                                        }
+                                        ?> 
+					<br />
+                                        
+			</div>
+		</div>
+	</body> 
+</html> 
