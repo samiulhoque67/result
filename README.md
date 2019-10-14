@@ -7,5 +7,4 @@ This is project for semester4.
 * Install XAMP
 * Add the database file 
 
-### Who do I talk to? ###
-jibin.thomas2706@gmail.com
+
